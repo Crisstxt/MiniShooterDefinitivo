@@ -23,6 +23,7 @@ public class MiniShooter : MonoBehaviour
     [SerializeField] private float limiteRotacionVertical = 45.0f;
     [SerializeField] private float fuerzaSalto = 2f;
     [SerializeField] private float gravedad = -9.81f;
+    [SerializeField] private float alturaSalto = 2f;
 
     [Header("Posiciones Camara Principal")]
     [SerializeField] private Vector3[] posicionesCamara;
@@ -143,6 +144,11 @@ public class MiniShooter : MonoBehaviour
     public GameObject GetJugador
     {
         get { return jugadorPrincipal;  }
+    }
+
+    public float GetAlturaSalto
+    {
+        get { return alturaSalto; }
     }
 
     public float GetSensibilidadRaton

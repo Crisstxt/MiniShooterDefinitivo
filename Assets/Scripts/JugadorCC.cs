@@ -43,6 +43,7 @@ public class JugadorCC : MonoBehaviour
     void Update()
     {
         Mover();
+        Saltar();
         Camara();
 
         if (!recargando) tiempoUltimoTiro += Time.deltaTime;
@@ -71,28 +72,12 @@ public class JugadorCC : MonoBehaviour
         float movimientoX = Input.GetAxis("Horizontal");
         float movimientoZ = Input.GetAxis("Vertical");
 
-        animator.SetFloat("MovX", movimientoX * MiniShooter.instance.GetVelocidadJugador);
-        animator.SetFloat("MovZ", movimientoZ * MiniShooter.instance.GetVelocidadJugador);
-
-        if (movimientoX == 0 && movimientoZ == 0) animator.SetBool("quieto", true);
-        else animator.SetBool("quieto", false);
-
         Vector3 movimiento = transform.right * movimientoX + transform.forward * movimientoZ;
         characterController.Move(MiniShooter.instance.GetVelocidadJugador * Time.deltaTime * movimiento);
 
         if (characterController.isGrounded && velocidadJugador.y < 0) velocidadJugador.y = 0f;
         velocidadJugador.y += MiniShooter.instance.GetGravedad * Time.deltaTime;
         characterController.Move(velocidadJugador * Time.deltaTime);
-
-        if (animator.GetBool("saltando") && characterController.isGrounded) animator.SetBool("saltando", false); 
-
-        if (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded)
-        {
-            if (animator.GetBool("quieto")) Invoke("Saltar", .5f);
-            else Saltar();
-
-            animator.SetBool("saltando", true);
-        }
            
         if (Input.GetKey(KeyCode.LeftShift)) MiniShooter.instance.Correr();
         else MiniShooter.instance.Caminar();
@@ -102,7 +87,9 @@ public class JugadorCC : MonoBehaviour
 
     private void Saltar()
     {
-        velocidadJugador.y += Mathf.Sqrt(3 * -2f * MiniShooter.instance.GetGravedad);
+        if (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded)
+            velocidadJugador.y += Mathf.Sqrt(MiniShooter.instance.GetAlturaSalto * -2f * MiniShooter.instance.GetGravedad);
+        
     }
 
     private void Camara()
