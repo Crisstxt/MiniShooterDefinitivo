@@ -43,8 +43,8 @@ public class JugadorCC : MonoBehaviour
     void Update()
     {
         Mover();
-        Saltar();
         Camara();
+        Correr();
 
         if (!recargando) tiempoUltimoTiro += Time.deltaTime;
 
@@ -78,18 +78,32 @@ public class JugadorCC : MonoBehaviour
         if (characterController.isGrounded && velocidadJugador.y < 0) velocidadJugador.y = 0f;
         velocidadJugador.y += MiniShooter.instance.GetGravedad * Time.deltaTime;
         characterController.Move(velocidadJugador * Time.deltaTime);
-           
-        if (Input.GetKey(KeyCode.LeftShift)) MiniShooter.instance.Correr();
-        else MiniShooter.instance.Caminar();
+
+        animator.SetFloat("MovX", movimientoX * MiniShooter.instance.GetVelocidadJugador);
+        animator.SetFloat("MovZ", movimientoZ * MiniShooter.instance.GetVelocidadJugador);
+
+        if (movimientoX == 0 && movimientoZ == 0) animator.SetBool("quieto", true);
+        else animator.SetBool("quieto", false);
+
+        if(animator.GetBool("saltando") && characterController.isGrounded) animator.SetBool("saltando", false);
+
+        if (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded)
+        {
+            velocidadJugador.y += Mathf.Sqrt(MiniShooter.instance.GetAlturaSalto * -2f * MiniShooter.instance.GetGravedad);
+
+            animator.SetBool("saltando", true); 
+        }
+            
 
         SimularCabeceo();
     }
 
-    private void Saltar()
+
+
+    private void Correr()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded)
-            velocidadJugador.y += Mathf.Sqrt(MiniShooter.instance.GetAlturaSalto * -2f * MiniShooter.instance.GetGravedad);
-        
+        if (Input.GetKey(KeyCode.LeftShift)) MiniShooter.instance.Correr();
+        else MiniShooter.instance.Caminar();
     }
 
     private void Camara()
