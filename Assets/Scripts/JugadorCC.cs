@@ -89,7 +89,8 @@ public class JugadorCC : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded)
         {
-            velocidadJugador.y += Mathf.Sqrt(MiniShooter.instance.GetAlturaSalto * -2f * MiniShooter.instance.GetGravedad);
+            if (animator.GetBool("quieto")) Invoke("Saltar", .5f);
+            else Saltar();
 
             animator.SetBool("saltando", true); 
         }
@@ -98,6 +99,11 @@ public class JugadorCC : MonoBehaviour
         SimularCabeceo();
     }
 
+    private void Saltar()
+    {
+        velocidadJugador.y += Mathf.Sqrt(MiniShooter.instance.GetAlturaSalto * -2f * MiniShooter.instance.GetGravedad);
+        animator.SetBool("saltando", true);
+    }
 
 
     private void Correr()

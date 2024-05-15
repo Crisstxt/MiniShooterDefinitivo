@@ -4026,7 +4026,7 @@ MonoBehaviour:
   limiteRotacionVertical: 45
   fuerzaSalto: 1.5
   gravedad: -9.81
-  alturaSalto: 2
+  alturaSalto: 4
   posicionesCamara:
   - {x: 0, y: 1.65, z: 0.145}
   - {x: 0, y: 1.928, z: -1.691}
