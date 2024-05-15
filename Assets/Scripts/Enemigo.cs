@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Enemigo : MonoBehaviour
 {
     #region Variables
@@ -11,13 +12,28 @@ public class Enemigo : MonoBehaviour
     public static event impacto EnemigoImpacto;
     #endregion
 
+    void Start()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = MiniShooter.instance.GetAnimator;
+    }
+
     void Update()
     {
         SeguirJugador();
+
+        if (Vector3.Distance(transform.position, MiniShooter.instance.GetJugador.transform.position) < 2)
+        {
+            GetComponent<Animator>().SetBool("cerca", true);
+        } else
+        {
+            GetComponent<Animator>().SetBool("cerca", false);
+        }
+
     }
 
     private void SeguirJugador()
     {
+        transform.LookAt(MiniShooter.instance.GetJugador.transform.position);
 
         transform.position = Vector3.MoveTowards(transform.position, MiniShooter.instance.GetJugador.transform.position,
             MiniShooter.instance.GetVelocidadEnemigos() * Time.deltaTime);
@@ -53,12 +69,13 @@ public class Enemigo : MonoBehaviour
             if (rb != null)
             {
                 Vector3 direccionEmpuje = collision.transform.position - transform.position;
-                direccionEmpuje = direccionEmpuje.normalized * MiniShooter.instance.GetFuerzaEmpuje();
+                direccionEmpuje = direccionEmpuje.normalized * MiniShooter.instance.GetFuerzaEmpuje;
                 rb.AddForce(direccionEmpuje, ForceMode.Impulse);
 
-                Vector3 torque = Random.insideUnitSphere * MiniShooter.instance.GetFuerzaGiro();
+                Vector3 torque = Random.insideUnitSphere * MiniShooter.instance.GetFuerzaGiro;
                 rb.AddTorque(torque);
             }
         }
     }
 }
+ 

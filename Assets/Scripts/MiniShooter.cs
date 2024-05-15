@@ -37,6 +37,7 @@ public class MiniShooter : MonoBehaviour
     [SerializeField] Color Oro;
     [SerializeField] Color Bronce;
     [SerializeField] Color Plata;
+    [SerializeField] private RuntimeAnimatorController animatorEnemigoBasico;
 
 
     private List<Enemigo> enemigos;
@@ -47,6 +48,7 @@ public class MiniShooter : MonoBehaviour
     private int oleada;
     private int puntuacion = 0;
     public static MiniShooter instance;
+    private bool barraCorrer;
 
     #endregion
 
@@ -65,7 +67,8 @@ public class MiniShooter : MonoBehaviour
         duracionRestante = duracionCorrer;
         velocidadJugador = velocidadCaminar;
         enemigos = new List<Enemigo>();
-    }
+        barraCorrer = false;
+}
 
     public void AgregarEnemigo(Enemigo enemigo)
     {
@@ -113,12 +116,16 @@ public class MiniShooter : MonoBehaviour
 
     public void Correr()
     {
-        if (duracionRestante > 0)
+        if (duracionRestante > 0 && !barraCorrer)
         {
             velocidadJugador = velocidadCorrer;
             duracionRestante = Mathf.Max(0, duracionRestante - Time.deltaTime);
         }
-        else Caminar();
+        else
+        {
+            barraCorrer = true;
+            Caminar();
+        }
     }
 
     public void Caminar()
@@ -128,6 +135,8 @@ public class MiniShooter : MonoBehaviour
             velocidadJugador = velocidadCaminar;
             duracionRestante = Mathf.Min(duracionCorrer, duracionRestante + Time.deltaTime);
         }
+
+        if(duracionRestante == duracionCorrer) barraCorrer = false;
     }
 
     public bool EstaEnPrimeraPersona()
@@ -225,14 +234,19 @@ public class MiniShooter : MonoBehaviour
         get { return velocidadJugador; }
     }
 
-    public float GetFuerzaEmpuje()
+    public float GetFuerzaEmpuje
     {
-        return fuerzaEmpuje;
+        get { return fuerzaEmpuje; }
     }
 
-    public float GetFuerzaGiro()
+    public float GetFuerzaGiro
     {
-        return fuerzaGiro;
+        get { return fuerzaGiro; }
+    }
+
+    public RuntimeAnimatorController GetAnimator
+    {
+        get { return animatorEnemigoBasico;  }
     }
     #endregion
 
